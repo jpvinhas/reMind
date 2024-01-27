@@ -14,13 +14,15 @@ class BoxViewModel: ObservableObject {
     @Published var description: String = ""
     @Published var theme: Int = 0
 
-    private var viewContext: NSManagedObjectContext
+    @Published var viewContext: NSManagedObjectContext
     
     @Published var boxes: [Box] = []
     
     init(viewContext: NSManagedObjectContext) {
-        self.viewContext = CoreDataStack.inMemory.managedContext
-        
+        self.viewContext = viewContext
+        self.boxes = Box.all()
+    }
+    func updateBoxes(){
         self.boxes = Box.all()
     }
 
@@ -38,4 +40,5 @@ class BoxViewModel: ObservableObject {
 
         return filteredTerms.count == 0 ? "" : "\(filteredTerms.count)"
     }
+    
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 struct SwipeReview {
-    var termsToReview: [Term]
+    var termsToReview: [Term] = []
     var termsReviewed: [Term] = []
     var allTerms: Int {
         return termsToReview.count + termsReviewed.count

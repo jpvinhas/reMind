@@ -57,9 +57,9 @@ extension Box: CoreDataModel {
 }
 
 enum reTheme: Int {
-    case aquamarine = 0
-    case mauve
-    case lavender
+    case mauve = 0
+    case lavender = 1
+    case aquamarine = 2
 
     var name: String {
         switch self {

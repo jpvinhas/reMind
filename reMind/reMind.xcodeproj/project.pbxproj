@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F62E65392B655AE0005A65D8 /* SwipperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62E65382B655AE0005A65D8 /* SwipperViewModel.swift */; };
 		F6E082E92B62C11000688B56 /* SwipperReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E082E82B62C11000688B56 /* SwipperReportView.swift */; };
 		F6E082EC2B62C1B000688B56 /* TermsReviewedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E082EB2B62C1B000688B56 /* TermsReviewedList.swift */; };
 		F6E082EE2B62C23900688B56 /* TermsReviewedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E082ED2B62C23900688B56 /* TermsReviewedLabel.swift */; };
@@ -47,6 +48,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F62E65382B655AE0005A65D8 /* SwipperViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipperViewModel.swift; sourceTree = "<group>"; };
 		F6E082E82B62C11000688B56 /* SwipperReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipperReportView.swift; sourceTree = "<group>"; };
 		F6E082EB2B62C1B000688B56 /* TermsReviewedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsReviewedList.swift; sourceTree = "<group>"; };
 		F6E082ED2B62C23900688B56 /* TermsReviewedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsReviewedLabel.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			children = (
 				FE3ABEE72A53562400432ED4 /* Components */,
 				FE3ABEDE2A53522A00432ED4 /* SwipperView.swift */,
+				F62E65382B655AE0005A65D8 /* SwipperViewModel.swift */,
 			);
 			path = Swipper;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 				FE3ABED52A5326C200432ED4 /* BoxView.swift in Sources */,
 				FE1640992AC2126E0073317C /* Term.swift in Sources */,
 				FE3ABECD2A4F5E8F00432ED4 /* reRadioButtonGroup.swift in Sources */,
+				F62E65392B655AE0005A65D8 /* SwipperViewModel.swift in Sources */,
 				F6E082EE2B62C23900688B56 /* TermsReviewedLabel.swift in Sources */,
 				FEE2DC732A4B5CE4006A535D /* Palette.swift in Sources */,
 				FE3ABEDA2A532A4D00432ED4 /* reColorButtonStyle.swift in Sources */,

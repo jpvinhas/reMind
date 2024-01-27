@@ -1,13 +1,9 @@
-//
-//  BoxView.swift
-//  reMind
-//
-//  Created by Pedro Sousa on 03/07/23.
-//
 
 import SwiftUI
 
 struct BoxView: View {
+    
+    @ObservedObject var viewModel: BoxViewModel
     @State var box: Box
     
     @State private var searchText: String = ""
@@ -28,22 +24,55 @@ struct BoxView: View {
     }
     
     var body: some View {
+        content
+            .scrollContentBackground(.hidden)
+            .background(reBackground())
+            .navigationTitle(box.name ?? "Unknown")
+            .searchable(text: $searchText, prompt: "")
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button {
+                        isEditingBox.toggle()
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+
+                    Button {
+                        isCreatingNewTerm.toggle()
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+
+                }
+
+            }
+            .sheet(isPresented: $isEditingBox) {
+                BoxEditorView(viewModel: viewModel,editorMode: true, box: box)
+            }
+
+            .sheet(isPresented: $isCreatingNewTerm) {
+                TermEditorView(box: $box, term: "", meaning: "")
+            }
+    }
+
+    private var content: some View {
         List {
-            TodaysCardsView(numberOfPendingCards: box.terms?.count ?? 0,
-                            theme: box.theme,box: box)
+            TodaysCardsView(numberOfPendingCards: getNumberOfPendingTerms(of: box),
+                            theme: box.theme, box: $box)
             Section {
                 ForEach(filteredTerms, id: \.self) { term in
-                    Text(term.value ?? "Unknown")
-                        .padding(.vertical, 8)
-                        .fontWeight(.bold)
-                        .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
-                                print("delete")
-                            } label: {
-                                Image(systemName: "trash")
+                    NavigationLink(destination: TermEditorView(box: $box, term: term.value ?? "", meaning: term.meaning ?? "", editorMode: true)) {
+                        Text(term.value ?? "Unknown")
+                            .padding(.vertical, 8)
+                            .fontWeight(.bold)
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    box.removeFromTerms(term)
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
                             }
-                            
-                        }
+                    }
                 }
             } header: {
                 Text("All Cards")
@@ -54,40 +83,28 @@ struct BoxView: View {
                     .padding(.leading, -16)
                     .padding(.bottom, 16)
             }
-            
-        }
-        .scrollContentBackground(.hidden)
-        .background(reBackground())
-        .navigationTitle(box.name ?? "Unknown")
-        .searchable(text: $searchText, prompt: "")
-        .toolbar {
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    isEditingBox.toggle()
-                } label: {
-                    Image(systemName: "square.and.pencil")
-                }
-                
-                Button {
-                    isCreatingNewTerm.toggle()
-                } label: {
-                    Image(systemName: "plus")
-                }
-                
-            }
-            
-        }
-        .sheet(isPresented: $isEditingBox) {
-            BoxEditorView(viewModel: BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext))
-        }
-
-        .sheet(isPresented: $isCreatingNewTerm) {
-            TermEditorView(box: $box, term: "", meaning: "")
         }
     }
+    
+    func getNumberOfPendingTerms(of box: Box) -> Int {
+        let term = box.terms as? Set<Term> ?? []
+        let today = Date()
+        let filteredTerms = term.filter { term in
+            let srs = Int(term.rawSRS)
+            guard let lastReview = term.lastReview,
+                  let nextReview = Calendar.current.date(byAdding: .day, value: srs, to: lastReview)
+            else { return false }
+            
+            return nextReview <= today
+        }
+        
+        return filteredTerms.count == 0 ? 0 : filteredTerms.count
+    }
 }
+
 struct BoxView_Previews: PreviewProvider {
-        static var box: Box = {
+    
+    @State static var box: Box = {
         let box = Box(context: CoreDataStack.inMemory.managedContext)
         box.name = "Box 1"
         box.rawTheme = 0
@@ -103,6 +120,10 @@ struct BoxView_Previews: PreviewProvider {
         
         let term2 = Term(context: CoreDataStack.inMemory.managedContext)
         term2.value = "Term 2"
+        term2.rawSRS = 2
+        term2.lastReview = Calendar.current.date(byAdding: .day, value: -3,to: Date())
+        let nextReview = Calendar.current.date(byAdding: .day, value: Int(term2.rawSRS), to: term2.lastReview ?? Date())
+        
         
         let term3 = Term(context: CoreDataStack.inMemory.managedContext)
         term3.value = "Term 3"
@@ -113,8 +134,7 @@ struct BoxView_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationStack {
-            BoxView(box: BoxView_Previews.box)
+            BoxView(viewModel: BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext),box: BoxView_Previews.box)
         }
     }
 }
-

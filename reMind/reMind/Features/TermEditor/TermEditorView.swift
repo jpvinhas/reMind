@@ -11,6 +11,7 @@ struct TermEditorView: View {
     @Binding var box: Box
     @State var term: String
     @State var meaning: String
+    @State var editorMode: Bool = false
 
     @Environment(\.presentationMode) var presentationMode
     
@@ -23,10 +24,17 @@ struct TermEditorView: View {
                 Spacer()
 
                 Button(action: {
+                    
+                    if editorMode {
+                        
+                        CoreDataStack.inMemory.saveContext()
+                        presentationMode.wrappedValue.dismiss()
+                    }else{
+                        saveNewTerm()
+                    }
                     print("save and add new")
-                    saveNewTerm()
                 }, label: {
-                    Text("Save and Add New")
+                    Text(editorMode ? "Save" : "Save and Add New")
                         .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(reButtonStyle())
@@ -37,7 +45,7 @@ struct TermEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button(editorMode ? "" : "Cancel") {
                         print("Cancel")
                         presentationMode.wrappedValue.dismiss()
                     }
@@ -45,8 +53,13 @@ struct TermEditorView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        print("Save new term")
-                        saveNewTerm()
+                        if editorMode {
+                            print("Edited")
+                            CoreDataStack.inMemory.saveContext()
+                            presentationMode.wrappedValue.dismiss()
+                        }else{
+                            saveNewTerm()
+                        }
                     }
                     .fontWeight(.bold)
                 }
@@ -58,8 +71,11 @@ struct TermEditorView: View {
         newTerm.value = term
         newTerm.meaning = meaning
         newTerm.creationDate = Date()
+        newTerm.lastReview = Date()
+        newTerm.rawSRS = 0
+        newTerm.boxID = box
+        newTerm.rawTheme = box.rawTheme
         box.addToTerms(newTerm)
-        print("1")
         CoreDataStack.inMemory.saveContext()
         presentationMode.wrappedValue.dismiss()
     }
@@ -89,5 +105,5 @@ struct TermEditorView_Previews: PreviewProvider {
         return [term1, term2, term3]
     }()
     static var previews: some View {
-        TermEditorView(box: $box, term: "", meaning: "")}
+        TermEditorView(box: $box, term: "" , meaning: "")}
 }

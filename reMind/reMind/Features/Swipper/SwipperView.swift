@@ -32,12 +32,11 @@ struct SwipperView: View {
                 Text("Meaning")
             }, theme: review.termsToReview.first?.theme ?? .lavender)
             .gesture(
-                DragGesture()
+                LongPressGesture()
                     .onEnded {_ in
                         updateReview(forDirection: finalDirection)
                     }
             )
-            .simultaneousGesture(DragGesture())
 
             Spacer()
 
@@ -66,16 +65,20 @@ struct SwipperView: View {
     }
 
     private func updateReview(forDirection direction: SwipperDirection) {
-        print("9")
-        if let termReviewed = review.termsToReview.first {
-            review.termsReviewed.append(termReviewed)
-            
-            review.termsToReview.removeFirst()
-            
-            self.finalDirection = direction
-        } else {
-            SwippedFinished.toggle()
+        guard let termReviewed = review.termsToReview.first else {
+            return
         }
+        termReviewed.rawSRS += (direction == .left) ? 1 : -1
+        termReviewed.lastReview = Date()
+        termReviewed.remembered = (direction == .left) ? true : false
+        
+        review.termsReviewed.append(termReviewed)
+        review.termsToReview.removeFirst()
+        
+        self.finalDirection = direction
+        if review.termsToReview.count == 0 {SwippedFinished.toggle()}
+        
+        print(review.termsReviewed.last?.rawSRS ?? 4)
     }
 }
 
@@ -85,7 +88,7 @@ struct SwipperView_Previews: PreviewProvider {
         term.value = "Terme"
         term.meaning = "Meaning"
         term.rawSRS = 0
-        term.rawTheme = 1
+        term.rawTheme = 2
         
         return term
     }()

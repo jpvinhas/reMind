@@ -20,14 +20,14 @@ struct BoxesView: View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(viewModel.boxes) { box in
-                    NavigationLink {
-                        BoxView(box: box)
-                    } label: {
-                        BoxCardView(boxName: box.name ?? "Unkown",
-                                    numberOfTerms: box.numberOfTerms,
-                                    theme: box.theme)
-                        .reBadge(viewModel.getNumberOfPendingTerms(of: box))
-                    }
+                    NavigationLink(destination: BoxView(viewModel: viewModel, box: box)) {
+                       BoxCardView(
+                           boxName: box.name ?? "Unknown",
+                           numberOfTerms: box.numberOfTerms,
+                           theme: box.theme
+                       )
+                       .reBadge(viewModel.getNumberOfPendingTerms(of: box))
+                   }
                 }
             }
             .padding(40)
@@ -45,7 +45,7 @@ struct BoxesView: View {
             }
         }
         .sheet(isPresented: $isCreatingNewBox) {
-            BoxEditorView(viewModel: viewModel)
+            BoxEditorView(viewModel: viewModel,box: Box(context: viewModel.viewContext))
         }
     }
 }

@@ -19,7 +19,7 @@ struct TermsReviewedList: View {
         List(terms) { term in
             VStack(alignment: .leading) {
                 HStack {
-                    Image(systemName: isok(term: term) ? "checkmark.circle" : "x.circle")
+                    Image(systemName: term.remembered ? "checkmark.circle" : "x.circle")
                         .foregroundColor(.black)
                     Text(term.value ?? "")
                         .font(.title3)
@@ -36,23 +36,18 @@ struct TermsReviewedList: View {
                     selectedCard = selectedCard == term ? nil : term
                 }
             }
-            .listRowBackground(isok(term: term) ? Palette.success.render : Palette.error.render)
+            .listRowBackground(term.remembered ? Palette.success.render : Palette.error.render)
 
             if selectedCard == term {
                 Text((term.meaning ?? term.meaning) ?? "")
                     .foregroundColor(.secondary)
                     .padding()
                     .listRowBackground(
-                        isok(term: term) ? Palette.success.render : Palette.error.render                    )
+                        term.remembered ? Palette.success.render : Palette.error.render                    )
             }
         }
         .background(reBackground())
         
-    }
-    private func isok(term: Term) -> Bool{
-        if term.rawSRS < 1 {
-            return true
-        }else{return false}
     }
 }
 struct TermsReviewedList_Preview: PreviewProvider {

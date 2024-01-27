@@ -9,7 +9,10 @@ import SwiftUI
 
 struct BoxEditorView: View {
     @ObservedObject var viewModel: BoxViewModel
-
+    
+    @State var editorMode: Bool = false
+    @State var box: Box
+    
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
@@ -19,11 +22,21 @@ struct BoxEditorView: View {
                 reTextField(title: "Keywords", caption: "Separated by , (comma)", text: $viewModel.keywords)
                 reTextEditor(title: "Description", text: $viewModel.description)
                 reRadioButtonGroup(title: "Theme", currentSelection: $viewModel.theme)
+                if editorMode {
+                    Button(action: {
+                        removeBox()
+                    }) {
+                        Text("Remove")
+                            .foregroundColor(.red)
+                            .padding()
+                    }
+                    .padding(.bottom, 20)
+                }
                 Spacer()
             }
             .padding()
             .background(reBackground())
-            .navigationTitle("New Box")
+            .navigationTitle(editorMode ? "Edit Box" : "New Box")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -34,7 +47,9 @@ struct BoxEditorView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        saveNewBox()
+                        if editorMode{
+                            print("edited")
+                        }else{saveNewBox()}
                     }
                     .fontWeight(.bold)
                 }
@@ -51,10 +66,24 @@ struct BoxEditorView: View {
         CoreDataStack.inMemory.saveContext()
         presentationMode.wrappedValue.dismiss()
     }
+    private func removeBox() {
+        box.destroy()
+        try? viewModel.viewContext.save()
+        presentationMode.wrappedValue.dismiss()
+   }
+    private func editBox(){
+        box.name = viewModel.name
+        box.keywords = viewModel.keywords
+        box.rawTheme = Int16(viewModel.theme)
+        
+        CoreDataStack.inMemory.saveContext()
+        presentationMode.wrappedValue.dismiss()
+    }
+    
 }
 struct BoxEditorView_Previews: PreviewProvider {
     static var previews: some View {
-        BoxEditorView(viewModel: BoxViewModel(viewContext: CoreDataStack.shared.managedContext))
+        BoxEditorView(viewModel: BoxViewModel(viewContext: CoreDataStack.shared.managedContext),editorMode: true,box: Box(context: CoreDataStack.inMemory.managedContext))
 
     }
 }

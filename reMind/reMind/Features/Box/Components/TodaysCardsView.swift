@@ -10,7 +10,7 @@ import SwiftUI
 struct TodaysCardsView: View {
     @State var numberOfPendingCards: Int
     @State var theme: reTheme
-    var box: Box
+    @Binding var box: Box
     @State private var isSwippedTime: Bool = false
     
     var body: some View {
@@ -24,24 +24,44 @@ struct TodaysCardsView: View {
             Button(action: {
                 print("swippe time!")
                 isSwippedTime.toggle()
-                _ = SwipeReview(termsToReview: box.terms?.allObjects as? [Term] ?? [])
             }, label: {
                 Text("Start Swipping")
                     .frame(maxWidth: .infinity)
             })
-            .buttonStyle(reColorButtonStyle(.mauve))
+            .buttonStyle(reColorButtonStyle(theme))
             .padding(.top, 10)
         }
         .padding(.vertical, 16)
         .fullScreenCover(isPresented: $isSwippedTime, onDismiss: {isSwippedTime = false}){
-            let swipperReview = SwipeReview(termsToReview: box.terms?.allObjects as? [Term] ?? [])
-            SwipperView(review: swipperReview)
+            SwipperView(review: swipperReview(box: box))
         }
+    }
+    func swipperReview(box: Box) -> SwipeReview{
+        let term = box.terms as? Set<Term> ?? []
+        let today = Date()
+        var swipperReview = SwipeReview()
+        swipperReview.termsToReview = term.filter { term in
+            let srs = Int(term.rawSRS)
+            guard let lastReview = term.lastReview,
+                  let nextReview = Calendar.current.date(byAdding: .day, value: srs, to: lastReview)
+            else { return false }
+
+            return nextReview <= today
+        }
+        swipperReview.termsReviewed = term.filter { term in
+            let srs = Int(term.rawSRS)
+            guard let lastReview = term.lastReview,
+                  let nextReview = Calendar.current.date(byAdding: .day, value: srs, to: lastReview)
+            else { return false }
+
+            return nextReview > today
+        }
+        return swipperReview
     }
 }
 
 struct TodaysCardsView_Previews: PreviewProvider {
-    static let box: Box = {
+     @State static var box: Box = {
         let box = Box(context: CoreDataStack.inMemory.managedContext)
         box.name = "Box 1"
         box.rawTheme = 0
@@ -64,7 +84,7 @@ struct TodaysCardsView_Previews: PreviewProvider {
         return [term1, term2, term3]
     }()
     static var previews: some View {
-        TodaysCardsView(numberOfPendingCards: 10, theme: .mauve, box: box)
+        TodaysCardsView(numberOfPendingCards: 10, theme: .mauve, box: $box)
             .padding()
     }
 }

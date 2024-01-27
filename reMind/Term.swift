@@ -11,7 +11,7 @@ import CoreData
 
 @objc(Term)
 public final class Term: NSManagedObject {
-
+    @objc dynamic var remembered: Bool = false
 }
 
 extension Term {
@@ -28,6 +28,7 @@ extension Term {
     @NSManaged public var value: String?
     @NSManaged public var boxID: Box?
 
+
 }
 
 extension Term: CoreDataModel {
@@ -37,6 +38,13 @@ extension Term: CoreDataModel {
 
     var theme: reTheme {
         return reTheme(rawValue: Int(self.rawTheme)) ?? reTheme.lavender
+    }
+    var nextReview : Date {
+        let srs = Int(self.rawSRS)
+        guard let lastReview = self.lastReview,
+              let nextReview = Calendar.current.date(byAdding: .day, value: srs, to: lastReview)
+        else { return Date() }
+        return nextReview
     }
 }
 
