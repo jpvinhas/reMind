@@ -34,7 +34,6 @@ struct BoxCardView: View {
         .frame(width: 165, alignment: .leading)
         .background(theme.render)
         .cornerRadius(10)
-        //.reBadge("10")
     }
 }
 

@@ -19,6 +19,7 @@ extension Box {
         return NSFetchRequest<Box>(entityName: "Box")
     }
 
+    @NSManaged public var creationDate: Date?
     @NSManaged public var identifier: UUID?
     @NSManaged public var name: String?
     @NSManaged public var rawTheme: Int16

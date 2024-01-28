@@ -38,6 +38,7 @@ struct BoxesView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
+                    print(viewModel.boxes)
                     isCreatingNewBox.toggle()
                 } label: {
                     Image(systemName: "plus")
@@ -45,7 +46,7 @@ struct BoxesView: View {
             }
         }
         .sheet(isPresented: $isCreatingNewBox) {
-            BoxEditorView(viewModel: viewModel,box: Box(context: viewModel.viewContext))
+            BoxEditorView(editorViewModel: EditorViewModel(viewModel: viewModel, box: nil))
         }
     }
 }
@@ -54,12 +55,16 @@ struct BoxesView_Previews: PreviewProvider {
 
     static let viewModel: BoxViewModel = {
         let box1 = Box(context: CoreDataStack.inMemory.managedContext)
+        box1.creationDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())
         box1.name = "Box 1"
         box1.rawTheme = 0
 
         let term = Term(context: CoreDataStack.inMemory.managedContext)
+        term.value = "term of box 1"
+        term.meaning = "meaning of box 1"
+        term.rawSRS = 1
         term.lastReview = Calendar.current.date(byAdding: .day,
-                                                value: -5,
+                                                value: -1,
                                                 to: Date())!
         box1.addToTerms(term)
 

@@ -15,15 +15,20 @@ class BoxViewModel: ObservableObject {
     @Published var theme: Int = 0
 
     @Published var viewContext: NSManagedObjectContext
+    deinit {
+        try? viewContext.save()
+        updateBoxes()
+    }
     
     @Published var boxes: [Box] = []
     
     init(viewContext: NSManagedObjectContext) {
         self.viewContext = viewContext
-        self.boxes = Box.all()
+        self.boxes = Box.all().sorted(by: { $0.creationDate ?? Date() > $1.creationDate ?? Date() })
     }
     func updateBoxes(){
-        self.boxes = Box.all()
+        self.boxes = Box.all().sorted(by: { $0.creationDate ?? Date() > $1.creationDate ?? Date() })
+        self.objectWillChange.send()
     }
 
     func getNumberOfPendingTerms(of box: Box) -> String {

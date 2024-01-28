@@ -27,9 +27,12 @@ extension CoreDataModel where Self: NSManagedObject {
 
     static func all() -> [Self] {
         let request = NSFetchRequest<Self>(entityName: self.className)
-        guard let result = try? context.fetch(request) else {
-            return [] }
-        return result
+        do {
+            return try context.fetch(request)
+        } catch {
+            print("Erro ao recuperar instâncias de \(self.className): \(error)")
+            return []
+        }
     }
 
     static func find(query: String, arguments: [Any]? = nil) -> [Self] {

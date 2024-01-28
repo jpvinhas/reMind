@@ -4,11 +4,14 @@ import SwiftUI
 struct BoxView: View {
     
     @ObservedObject var viewModel: BoxViewModel
+    
     @State var box: Box
     
     @State private var searchText: String = ""
     @State private var isEditingBox: Bool = false
     @State private var isCreatingNewTerm: Bool = false
+    
+    @Environment(\.presentationMode) var presentationMode
     
     private var filteredTerms: [Term] {
         let termsSet = box.terms as? Set<Term> ?? []
@@ -36,7 +39,6 @@ struct BoxView: View {
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
-
                     Button {
                         isCreatingNewTerm.toggle()
                     } label: {
@@ -47,7 +49,13 @@ struct BoxView: View {
 
             }
             .sheet(isPresented: $isEditingBox) {
-                BoxEditorView(viewModel: viewModel,editorMode: true, box: box)
+                let editorViewModel = EditorViewModel(viewModel: viewModel,box: box)
+                BoxEditorView(editorViewModel: editorViewModel, editorMode: true)
+                .onDisappear {
+                    if box.name == nil {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
             }
 
             .sheet(isPresented: $isCreatingNewTerm) {
@@ -107,7 +115,7 @@ struct BoxView_Previews: PreviewProvider {
     @State static var box: Box = {
         let box = Box(context: CoreDataStack.inMemory.managedContext)
         box.name = "Box 1"
-        box.rawTheme = 0
+        box.rawTheme = 1
         BoxView_Previews.terms.forEach { term in
             box.addToTerms(term)
         }
@@ -120,9 +128,8 @@ struct BoxView_Previews: PreviewProvider {
         
         let term2 = Term(context: CoreDataStack.inMemory.managedContext)
         term2.value = "Term 2"
-        term2.rawSRS = 2
-        term2.lastReview = Calendar.current.date(byAdding: .day, value: -3,to: Date())
-        let nextReview = Calendar.current.date(byAdding: .day, value: Int(term2.rawSRS), to: term2.lastReview ?? Date())
+        term2.rawSRS = 1
+        term2.lastReview = Calendar.current.date(byAdding: .day, value: -1,to: Date())
         
         
         let term3 = Term(context: CoreDataStack.inMemory.managedContext)

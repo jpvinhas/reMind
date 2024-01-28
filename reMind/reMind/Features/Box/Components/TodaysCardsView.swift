@@ -12,6 +12,7 @@ struct TodaysCardsView: View {
     @State var theme: reTheme
     @Binding var box: Box
     @State private var isSwippedTime: Bool = false
+    @State private var showAlert: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -22,8 +23,12 @@ struct TodaysCardsView: View {
                 .font(.title3)
             
             Button(action: {
-                print("swippe time!")
-                isSwippedTime.toggle()
+                if numberOfPendingCards > 0 {
+                    print("swippe time!")
+                    isSwippedTime.toggle()
+                } else {
+                    showAlert.toggle()
+                }
             }, label: {
                 Text("Start Swipping")
                     .frame(maxWidth: .infinity)
@@ -34,6 +39,13 @@ struct TodaysCardsView: View {
         .padding(.vertical, 16)
         .fullScreenCover(isPresented: $isSwippedTime, onDismiss: {isSwippedTime = false}){
             SwipperView(review: swipperReview(box: box))
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("No Cards"),
+                message: Text("There are no pending cards to review."),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
     func swipperReview(box: Box) -> SwipeReview{

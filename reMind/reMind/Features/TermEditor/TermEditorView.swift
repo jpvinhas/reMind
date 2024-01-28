@@ -24,9 +24,7 @@ struct TermEditorView: View {
                 Spacer()
 
                 Button(action: {
-                    
                     if editorMode {
-                        
                         CoreDataStack.inMemory.saveContext()
                         presentationMode.wrappedValue.dismiss()
                     }else{
@@ -41,7 +39,7 @@ struct TermEditorView: View {
             }
             .padding()
             .background(reBackground())
-            .navigationTitle("New Term")
+            .navigationTitle(editorMode ? "Term Editor" : "New Term")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -59,6 +57,7 @@ struct TermEditorView: View {
                             presentationMode.wrappedValue.dismiss()
                         }else{
                             saveNewTerm()
+                            presentationMode.wrappedValue.dismiss()
                         }
                     }
                     .fontWeight(.bold)
@@ -72,12 +71,13 @@ struct TermEditorView: View {
         newTerm.meaning = meaning
         newTerm.creationDate = Date()
         newTerm.lastReview = Date()
-        newTerm.rawSRS = 0
+        newTerm.rawSRS = 1
         newTerm.boxID = box
         newTerm.rawTheme = box.rawTheme
         box.addToTerms(newTerm)
         CoreDataStack.inMemory.saveContext()
-        presentationMode.wrappedValue.dismiss()
+        term = ""
+        meaning = ""
     }
 }
 
