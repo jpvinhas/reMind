@@ -59,6 +59,7 @@ struct TermEditorView: View {
                             editedTerm?.value = term
                             editedTerm?.meaning = meaning
                             try? box.managedObjectContext?.save()
+                            viewModel.updateBoxes()
                             presentationMode.wrappedValue.dismiss()
                         }else{
                             saveNewTerm()
