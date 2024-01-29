@@ -5,7 +5,15 @@ struct BoxView: View {
     
     @ObservedObject var viewModel: BoxViewModel
     
-    @State var box: Box
+    var box: Box
+    @ObservedObject var editorViewModel: EditorViewModel
+    
+    init(viewModel: BoxViewModel, box: Box) {
+            self.viewModel = viewModel
+            self.box = box
+            self.editorViewModel = EditorViewModel(viewModel: viewModel, box: box)
+    }
+    
     
     @State private var searchText: String = ""
     @State private var isEditingBox: Bool = false
@@ -49,27 +57,26 @@ struct BoxView: View {
 
             }
             .sheet(isPresented: $isEditingBox) {
-                let editorViewModel = EditorViewModel(viewModel: viewModel,box: box)
                 BoxEditorView(editorViewModel: editorViewModel, editorMode: true)
                 .onDisappear {
                     if box.name == nil {
                         presentationMode.wrappedValue.dismiss()
                     }
+                    viewModel.updateBoxes()
                 }
             }
 
             .sheet(isPresented: $isCreatingNewTerm) {
-                TermEditorView(box: $box, term: "", meaning: "")
+                TermEditorView(viewModel: viewModel, box: box,editedTerm: nil)
             }
     }
 
     private var content: some View {
         List {
-            TodaysCardsView(numberOfPendingCards: getNumberOfPendingTerms(of: box),
-                            theme: box.theme, box: $box)
+            TodaysCardsView(viewModel: viewModel, box: box)
             Section {
                 ForEach(filteredTerms, id: \.self) { term in
-                    NavigationLink(destination: TermEditorView(box: $box, term: term.value ?? "", meaning: term.meaning ?? "", editorMode: true)) {
+                    NavigationLink(destination: TermEditorView(viewModel:viewModel,box: box,editedTerm: term, term: term.value ?? "", meaning: term.meaning ?? "",editorMode: true)) {
                         Text(term.value ?? "Unknown")
                             .padding(.vertical, 8)
                             .fontWeight(.bold)
@@ -91,22 +98,10 @@ struct BoxView: View {
                     .padding(.leading, -16)
                     .padding(.bottom, 16)
             }
+            .onAppear {
+                try? viewModel.viewContext.save()
+            }
         }
-    }
-    
-    func getNumberOfPendingTerms(of box: Box) -> Int {
-        let term = box.terms as? Set<Term> ?? []
-        let today = Date()
-        let filteredTerms = term.filter { term in
-            let srs = Int(term.rawSRS)
-            guard let lastReview = term.lastReview,
-                  let nextReview = Calendar.current.date(byAdding: .day, value: srs, to: lastReview)
-            else { return false }
-            
-            return nextReview <= today
-        }
-        
-        return filteredTerms.count == 0 ? 0 : filteredTerms.count
     }
 }
 

@@ -10,7 +10,11 @@ import CoreData
 
 @main
 struct reMindApp: App {
-    let viewModel: BoxViewModel = BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext)
+    let viewModel: BoxViewModel = {
+        let viewModel = BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext)
+        viewModel.addTestTerms(to: viewModel.viewContext)
+        return viewModel
+    }()
     var body: some Scene {
         WindowGroup {
             NavigationStack {

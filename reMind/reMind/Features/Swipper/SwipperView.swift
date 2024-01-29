@@ -20,20 +20,31 @@ struct SwipperView: View {
     @State private var SwippedFinished: Bool = false
     var body: some View {
         VStack {
-            SwipperLabel(direction: $direction)
-                .padding()
+            SwipperLabel(direction: finalDirection)
+            .padding()
 
             Spacer()
 
             SwipperCard(direction: $direction,
-                        finalDirection: $finalDirection, frontContent: {
-                Text(review.termsToReview.first?.value ?? "Term")
-            }, backContent: {
-                Text("Meaning")
-            }, theme: review.termsToReview.first?.theme ?? .lavender)
+                    finalDirection: $finalDirection,
+                    frontContent: {
+                        Text("Front Content")
+                    },
+                    backContent: {
+                        Text("Back Content")
+                    },
+                    theme: .lavender)
             .gesture(
-                LongPressGesture()
-                    .onEnded {_ in
+                DragGesture()
+                    .onEnded { _ in
+                        updateReview(forDirection: finalDirection)
+                    }
+            )
+            .simultaneousGesture(
+                DragGesture()
+                    .onChanged { value in
+                    }
+                    .onEnded { value in
                         updateReview(forDirection: finalDirection)
                     }
             )
@@ -59,7 +70,7 @@ struct SwipperView: View {
         .fullScreenCover(isPresented: $SwippedFinished, onDismiss: {
             presentationMode.wrappedValue.dismiss()
         }){
-            SwipperReportView(review: $review)
+            SwipperReportView(review: review)
         }
         
     }

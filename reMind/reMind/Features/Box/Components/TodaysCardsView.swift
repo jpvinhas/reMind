@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct TodaysCardsView: View {
-    @State var numberOfPendingCards: Int
-    @State var theme: reTheme
-    @Binding var box: Box
+    @ObservedObject var viewModel: BoxViewModel
+    var box: Box
     @State private var isSwippedTime: Bool = false
     @State private var showAlert: Bool = false
     
@@ -19,11 +18,11 @@ struct TodaysCardsView: View {
             Text("Today's Cards")
                 .font(.title)
                 .fontWeight(.semibold)
-            Text("\(numberOfPendingCards) cards to review")
+            Text("\(box.numberOfPendingTerms) cards to review")
                 .font(.title3)
             
             Button(action: {
-                if numberOfPendingCards > 0 {
+                if box.numberOfPendingTerms > 0 {
                     print("swippe time!")
                     isSwippedTime.toggle()
                 } else {
@@ -33,7 +32,7 @@ struct TodaysCardsView: View {
                 Text("Start Swipping")
                     .frame(maxWidth: .infinity)
             })
-            .buttonStyle(reColorButtonStyle(theme))
+            .buttonStyle(reColorButtonStyle(box.theme))
             .padding(.top, 10)
         }
         .padding(.vertical, 16)
@@ -73,30 +72,43 @@ struct TodaysCardsView: View {
 }
 
 struct TodaysCardsView_Previews: PreviewProvider {
-     @State static var box: Box = {
-        let box = Box(context: CoreDataStack.inMemory.managedContext)
-        box.name = "Box 1"
-        box.rawTheme = 0
-        BoxView_Previews.terms.forEach { term in
-            box.addToTerms(term)
-        }
-        return box
-    }()
-    
-    static let terms: [Term] = {
-        let term1 = Term(context: CoreDataStack.inMemory.managedContext)
-        term1.value = "Term 1"
-        
+    static let viewModel: BoxViewModel = {
+        let box1 = Box(context: CoreDataStack.inMemory.managedContext)
+        box1.creationDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())
+        box1.name = "Box 1"
+        box1.rawTheme = 0
+
+        let term = Term(context: CoreDataStack.inMemory.managedContext)
+        term.value = "term of box 1"
+        term.meaning = "meaning of box 1"
+        term.rawSRS = 0
+        term.lastReview = Calendar.current.date(byAdding: .day,
+                                                value: -1,
+                                                to: Date())!
         let term2 = Term(context: CoreDataStack.inMemory.managedContext)
-        term2.value = "Term 2"
-        
-        let term3 = Term(context: CoreDataStack.inMemory.managedContext)
-        term3.value = "Term 3"
-        
-        return [term1, term2, term3]
+        term.value = "term2 of box 1"
+        term.meaning = "meaning2 of box 1"
+        term.rawSRS = 1
+        term.lastReview = Calendar.current.date(byAdding: .day,
+                                                value: -1,
+                                                to: Date())!
+
+        box1.addToTerms(term)
+
+        let box2 = Box(context: CoreDataStack.inMemory.managedContext)
+        box2.name = "Box 2"
+        box2.rawTheme = 1
+
+        let box3 = Box(context: CoreDataStack.inMemory.managedContext)
+        box3.name = "Box 3"
+        box3.rawTheme = 2
+
+        return BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext)
     }()
+    @State static var box: Box = Box(context: viewModel.viewContext)
     static var previews: some View {
-        TodaysCardsView(numberOfPendingCards: 10, theme: .mauve, box: $box)
-            .padding()
+        TodaysCardsView(viewModel: viewModel, box: box)
+        
+        .padding()
     }
 }

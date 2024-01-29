@@ -14,7 +14,7 @@ enum SwipperDirection: String {
 }
 
 struct SwipperLabel: View {
-    @Binding var direction: SwipperDirection
+    var direction: SwipperDirection
 
     private var text: String  {
         if direction == .left {
@@ -25,7 +25,7 @@ struct SwipperLabel: View {
             return "I remember this term!"
         }
 
-        return ""
+        return "swippe!"
     }
     
     var body: some View {
@@ -36,6 +36,6 @@ struct SwipperLabel: View {
 
 struct SwipperLabel_Previews: PreviewProvider {
     static var previews: some View {
-        SwipperLabel(direction: .constant(.right))
+        SwipperLabel(direction: .right)
     }
 }

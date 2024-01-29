@@ -50,8 +50,10 @@ struct BoxEditorView: View {
                     Button("Save") {
                         if editorMode{
                             editorViewModel.editBox()
+                            editorViewModel.viewModel.updateBoxes()
                             presentationMode.wrappedValue.dismiss()
                             print("edited")
+                            print("ViewModel Boxess: \(editorViewModel.viewModel.boxes)")
                         }else{
                             editorViewModel.saveNewBox()
                             presentationMode.wrappedValue.dismiss()

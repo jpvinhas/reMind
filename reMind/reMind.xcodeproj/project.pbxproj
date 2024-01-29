@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F62E65392B655AE0005A65D8 /* SwipperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62E65382B655AE0005A65D8 /* SwipperViewModel.swift */; };
+		F62E653B2B660EDA005A65D8 /* TermEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62E653A2B660EDA005A65D8 /* TermEditorViewModel.swift */; };
 		F6E082E92B62C11000688B56 /* SwipperReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E082E82B62C11000688B56 /* SwipperReportView.swift */; };
 		F6E082EC2B62C1B000688B56 /* TermsReviewedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E082EB2B62C1B000688B56 /* TermsReviewedList.swift */; };
 		F6E082EE2B62C23900688B56 /* TermsReviewedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E082ED2B62C23900688B56 /* TermsReviewedLabel.swift */; };
@@ -49,6 +50,7 @@
 
 /* Begin PBXFileReference section */
 		F62E65382B655AE0005A65D8 /* SwipperViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipperViewModel.swift; sourceTree = "<group>"; };
+		F62E653A2B660EDA005A65D8 /* TermEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermEditorViewModel.swift; sourceTree = "<group>"; };
 		F6E082E82B62C11000688B56 /* SwipperReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipperReportView.swift; sourceTree = "<group>"; };
 		F6E082EB2B62C1B000688B56 /* TermsReviewedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsReviewedList.swift; sourceTree = "<group>"; };
 		F6E082ED2B62C23900688B56 /* TermsReviewedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsReviewedLabel.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				FE3ABECF2A4F65BC00432ED4 /* TermEditorView.swift */,
+				F62E653A2B660EDA005A65D8 /* TermEditorViewModel.swift */,
 			);
 			path = TermEditor;
 			sourceTree = "<group>";
@@ -455,6 +458,7 @@
 				FE3ABEDF2A53522A00432ED4 /* SwipperView.swift in Sources */,
 				FE6F11B12A605A4C003511F3 /* NSObject.swift in Sources */,
 				FE6F11AD2A6059FD003511F3 /* CoreDataStack.swift in Sources */,
+				F62E653B2B660EDA005A65D8 /* TermEditorViewModel.swift in Sources */,
 				F6ED83DF2B618412008577AF /* reLaunchScreen.swift in Sources */,
 				FE6F11B32A605A69003511F3 /* ActiveRecord.swift in Sources */,
 				FE3ABEE62A5354AF00432ED4 /* reTheme.swift in Sources */,

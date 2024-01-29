@@ -55,6 +55,20 @@ extension Box: CoreDataModel {
     }
 
     var numberOfTerms: Int { self.terms?.count ?? 0 }
+    var numberOfPendingTerms: Int {
+        let term = self.terms as? Set<Term> ?? []
+        let today = Date()
+        let filteredTerms = term.filter { term in
+            let srs = Int(term.rawSRS)
+            guard let lastReview = term.lastReview,
+                  let nextReview = Calendar.current.date(byAdding: .day, value: srs, to: lastReview)
+            else { return false }
+            
+            return nextReview <= today
+        }
+        
+        return filteredTerms.count == 0 ? 0 : filteredTerms.count
+    }
 }
 
 enum reTheme: Int {

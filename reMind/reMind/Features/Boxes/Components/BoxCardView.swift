@@ -8,23 +8,16 @@
 import SwiftUI
 
 struct BoxCardView: View {
-    @State private var boxName: String
-    @State private var numberOfTerms: Int
-    @State private var theme: reTheme
-
-    init(boxName: String, numberOfTerms: Int, theme: reTheme) {
-        self.boxName = boxName
-        self.numberOfTerms = numberOfTerms
-        self.theme = theme
-    }
+    @ObservedObject var viewModel: BoxViewModel
+    var box: Box
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(boxName)
+            Text(box.name ?? "")
                 .font(.title3)
                 .fontWeight(.bold)
             
-            Label("\(numberOfTerms) terms", systemImage: "doc.plaintext.fill")
+            Label("\(box.numberOfTerms) terms", systemImage: "doc.plaintext.fill")
                 .padding(8)
                 .background(Palette.reBlack.render.opacity(0.2))
                 .cornerRadius(10)
@@ -32,15 +25,39 @@ struct BoxCardView: View {
         .foregroundColor(Palette.reBlack.render)
         .padding(16)
         .frame(width: 165, alignment: .leading)
-        .background(theme.render)
+        .background(box.theme.render)
         .cornerRadius(10)
     }
 }
 
 struct BoxCardView_Previews: PreviewProvider {
+    static let viewModel: BoxViewModel = {
+        let box1 = Box(context: CoreDataStack.inMemory.managedContext)
+        box1.creationDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())
+        box1.name = "Box 1"
+        box1.rawTheme = 0
+
+        let term = Term(context: CoreDataStack.inMemory.managedContext)
+        term.value = "term of box 1"
+        term.meaning = "meaning of box 1"
+        term.rawSRS = 1
+        term.lastReview = Calendar.current.date(byAdding: .day,
+                                                value: -1,
+                                                to: Date())!
+        box1.addToTerms(term)
+
+        let box2 = Box(context: CoreDataStack.inMemory.managedContext)
+        box2.name = "Box 2"
+        box2.rawTheme = 1
+
+        let box3 = Box(context: CoreDataStack.inMemory.managedContext)
+        box3.name = "Box 3"
+        box3.rawTheme = 2
+
+        return BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext)
+    }()
     static var previews: some View {
-        BoxCardView(boxName: "Math",
-                    numberOfTerms: 35,
-                    theme: .mauve)
+        BoxCardView(viewModel: viewModel, box: Box(context: CoreDataStack.inMemory.managedContext)
+)
     }
 }

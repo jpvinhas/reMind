@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SwipperReportView: View {
-    @Binding var review: SwipeReview
+    var review: SwipeReview
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -40,6 +40,6 @@ struct SwipperReportView: View {
 struct SwipperReportView_Preview: PreviewProvider {
     @State static var review: SwipeReview = SwipeReview(termsToReview: [], termsReviewed: [])
     static var previews: some View {
-        SwipperReportView(review: $review)
+        SwipperReportView(review: review)
     }
 }

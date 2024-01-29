@@ -21,12 +21,8 @@ struct BoxesView: View {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(viewModel.boxes) { box in
                     NavigationLink(destination: BoxView(viewModel: viewModel, box: box)) {
-                       BoxCardView(
-                           boxName: box.name ?? "Unknown",
-                           numberOfTerms: box.numberOfTerms,
-                           theme: box.theme
-                       )
-                       .reBadge(viewModel.getNumberOfPendingTerms(of: box))
+                       BoxCardView(viewModel: viewModel, box: box)
+                            .reBadge(String(box.numberOfPendingTerms))
                    }
                 }
             }
@@ -54,29 +50,9 @@ struct BoxesView: View {
 struct BoxesView_Previews: PreviewProvider {
 
     static let viewModel: BoxViewModel = {
-        let box1 = Box(context: CoreDataStack.inMemory.managedContext)
-        box1.creationDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())
-        box1.name = "Box 1"
-        box1.rawTheme = 0
-
-        let term = Term(context: CoreDataStack.inMemory.managedContext)
-        term.value = "term of box 1"
-        term.meaning = "meaning of box 1"
-        term.rawSRS = 1
-        term.lastReview = Calendar.current.date(byAdding: .day,
-                                                value: -1,
-                                                to: Date())!
-        box1.addToTerms(term)
-
-        let box2 = Box(context: CoreDataStack.inMemory.managedContext)
-        box2.name = "Box 2"
-        box2.rawTheme = 1
-
-        let box3 = Box(context: CoreDataStack.inMemory.managedContext)
-        box3.name = "Box 3"
-        box3.rawTheme = 2
-
-        return BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext)
+        let viewModel = BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext)
+        viewModel.addTestTerms(to: viewModel.viewContext)
+        return viewModel
     }()
     
     static var previews: some View {

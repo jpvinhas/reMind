@@ -81,12 +81,10 @@ struct SwipperCard<FrontContent: View, BackContent: View>: View {
     private func dragDidChange(_ gesture: DragGesture.Value) {
         dragAmout = gesture.translation
         cardAngle = Angle(degrees: gesture.translation.width * 0.05)
-        print("1")
         
         if gesture.translation.width > 0 && direction != .right {
             withAnimation(.linear(duration: duration)) {
                 finalDirection = .right
-                print("3")
             }
         }
 
@@ -99,7 +97,6 @@ struct SwipperCard<FrontContent: View, BackContent: View>: View {
         if gesture.translation == .zero && direction != .none {
             withAnimation(.linear(duration: duration)) {
                 finalDirection = .none
-                print("4")
             }
         }
     }
@@ -111,7 +108,6 @@ struct SwipperCard<FrontContent: View, BackContent: View>: View {
             cardAngle = .zero
             direction = .none
             print(finalDirection)
-            print(direction)
             
         }
     }
