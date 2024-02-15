@@ -38,6 +38,9 @@ struct TodaysCardsView: View {
         .padding(.vertical, 16)
         .fullScreenCover(isPresented: $isSwippedTime, onDismiss: {isSwippedTime = false}){
             SwipperView(review: swipperReview(box: box))
+                .onAppear {
+                    viewModel.updateBoxes()
+                }
         }
         .alert(isPresented: $showAlert) {
             Alert(

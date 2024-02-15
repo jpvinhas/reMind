@@ -28,10 +28,10 @@ struct SwipperView: View {
             SwipperCard(direction: $direction,
                     finalDirection: $finalDirection,
                     frontContent: {
-                        Text("Front Content")
+                        Text(review.termsToReview.first?.value ?? "")
                     },
                     backContent: {
-                        Text("Back Content")
+                        Text(review.termsToReview.first?.meaning ?? "")
                     },
                     theme: .lavender)
             .gesture(
@@ -79,9 +79,9 @@ struct SwipperView: View {
         guard let termReviewed = review.termsToReview.first else {
             return
         }
-        termReviewed.rawSRS += (direction == .left) ? 1 : -1
+        termReviewed.rawSRS += (direction == .left) ? 0 : 1
         termReviewed.lastReview = Date()
-        termReviewed.remembered = (direction == .left) ? true : false
+        termReviewed.remembered = (direction == .left) ? false : true
         
         review.termsReviewed.append(termReviewed)
         review.termsToReview.removeFirst()

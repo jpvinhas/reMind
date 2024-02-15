@@ -21,6 +21,7 @@ class BoxViewModel: ObservableObject {
     }
     
     @Published var boxes: [Box] = []
+    @Published var numberOfPendingTerms: Int = 0
     
     init(viewContext: NSManagedObjectContext) {
         self.viewContext = viewContext
@@ -99,8 +100,22 @@ class BoxViewModel: ObservableObject {
 
             return nextReview <= today
         }
-
+        self.numberOfPendingTerms = filteredTerms.count
         return filteredTerms.count == 0 ? "" : "\(filteredTerms.count)"
+    }
+    func swipperReview(box: Box) -> SwipeReview{
+        let term = box.terms as? Set<Term> ?? []
+        let today = Date()
+        var swipperReview = SwipeReview()
+        swipperReview.termsToReview = term.filter { term in
+            let srs = Int(term.rawSRS)
+            guard let lastReview = term.lastReview,
+                  let nextReview = Calendar.current.date(byAdding: .day, value: srs, to: lastReview)
+            else { return false }
+
+            return nextReview <= today
+        }
+        return swipperReview
     }
     
 }

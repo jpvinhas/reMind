@@ -4,9 +4,9 @@ import SwiftUI
 struct BoxView: View {
     
     @ObservedObject var viewModel: BoxViewModel
+    @ObservedObject var editorViewModel: EditorViewModel
     
     var box: Box
-    @ObservedObject var editorViewModel: EditorViewModel
     
     init(viewModel: BoxViewModel, box: Box) {
             self.viewModel = viewModel

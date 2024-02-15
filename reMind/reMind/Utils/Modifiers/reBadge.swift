@@ -21,7 +21,7 @@ struct reBadgeModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        if value == "0" {
+        if value == "" {
             content
         } else {
             content
