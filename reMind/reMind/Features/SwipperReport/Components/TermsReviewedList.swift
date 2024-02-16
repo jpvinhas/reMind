@@ -10,9 +10,7 @@ import SwiftUI
 struct TermsReviewedList: View {
     
     var terms: [Term] = []
-//    @FetchRequest(entity: Term.entity(), sortDescriptors: [])
-//    private var terms: FetchedResults<Term>
-
+    
     @State private var selectedCard: Term?
 
     var body: some View {

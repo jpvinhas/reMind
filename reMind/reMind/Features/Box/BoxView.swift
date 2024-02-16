@@ -69,6 +69,9 @@ struct BoxView: View {
             .sheet(isPresented: $isCreatingNewTerm) {
                 TermEditorView(viewModel: viewModel, box: box,editedTerm: nil)
             }
+            .onDisappear {
+                viewModel.updateBoxes()
+            }
     }
 
     private var content: some View {
@@ -98,7 +101,11 @@ struct BoxView: View {
                     .padding(.leading, -16)
                     .padding(.bottom, 16)
             }
+            .onDisappear {
+                viewModel.updateBoxes()
+            }
             .onAppear {
+                viewModel.updateBoxes()
                 try? viewModel.viewContext.save()
             }
         }

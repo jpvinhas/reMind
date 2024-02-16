@@ -38,6 +38,9 @@ struct TodaysCardsView: View {
         .padding(.vertical, 16)
         .fullScreenCover(isPresented: $isSwippedTime, onDismiss: {isSwippedTime = false}){
             SwipperView(review: swipperReview(box: box))
+                .onDisappear {
+                    viewModel.updateBoxes()
+                }
                 .onAppear {
                     viewModel.updateBoxes()
                 }
@@ -48,6 +51,9 @@ struct TodaysCardsView: View {
                 message: Text("There are no pending cards to review."),
                 dismissButton: .default(Text("OK"))
             )
+        }
+        .onDisappear {
+            viewModel.updateBoxes()
         }
     }
     func swipperReview(box: Box) -> SwipeReview{

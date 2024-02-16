@@ -22,8 +22,8 @@ struct BoxesView: View {
                 ForEach(viewModel.boxes) { box in
                     NavigationLink(destination: BoxView(viewModel: viewModel, box: box)) {
                        BoxCardView(viewModel: viewModel, box: box)
-                            .reBadge(String(box.numberOfPendingTerms))
-                   }
+                            .reBadge(viewModel.getNumberOfPendingTerms(of: box))
+                    }
                 }
             }
             .padding(40)
@@ -34,8 +34,8 @@ struct BoxesView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    print(viewModel.boxes)
                     isCreatingNewBox.toggle()
+                    viewModel.updateBoxes()
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -44,6 +44,9 @@ struct BoxesView: View {
         .sheet(isPresented: $isCreatingNewBox) {
             BoxEditorView(editorViewModel: EditorViewModel(viewModel: viewModel, box: nil))
         }
+        .onAppear {
+            viewModel.updateBoxes()
+        }
     }
 }
 
@@ -51,7 +54,6 @@ struct BoxesView_Previews: PreviewProvider {
 
     static let viewModel: BoxViewModel = {
         let viewModel = BoxViewModel(viewContext: CoreDataStack.inMemory.managedContext)
-        viewModel.addTestTerms(to: viewModel.viewContext)
         return viewModel
     }()
     

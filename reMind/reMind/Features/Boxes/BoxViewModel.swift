@@ -100,7 +100,6 @@ class BoxViewModel: ObservableObject {
 
             return nextReview <= today
         }
-        self.numberOfPendingTerms = filteredTerms.count
         return filteredTerms.count == 0 ? "" : "\(filteredTerms.count)"
     }
     func swipperReview(box: Box) -> SwipeReview{

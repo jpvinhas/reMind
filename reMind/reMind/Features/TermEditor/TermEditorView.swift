@@ -34,7 +34,6 @@ struct TermEditorView: View {
                     }else{
                         saveNewTerm()
                     }
-                    print("save and add new")
                 }, label: {
                     Text(editorMode ? "Save" : "Save and Add New")
                         .frame(maxWidth: .infinity)
